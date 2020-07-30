@@ -10,10 +10,18 @@ vytvoření souborů
       import {Select} from './select/select.js'
       import './select/styles.scss'
       const select = new Select()
-  ./select/select.js:
+
+vytvoření složky select a v ní souborů:
+   select.js
+   styles.js
+
+soubor ./select/select.js:
+
          export class Select{
          }
-      ./select/styles.csss:
+
+souboor ./select/styles.csss:
+
       .app{
         padding-top: 5rem;
         display: flex;
@@ -23,7 +31,8 @@ vytvoření souborů
       .wrap{
         width: 500px;
       }
-  index.html (a v něm odkaz na <script src="index.js"></script>)
+
+soubor index.html (a v něm odkaz na <script src="index.js"></script>)
         <!doctype html>
         <html lang="en">
         <head>
@@ -49,3 +58,132 @@ spuštění:
 
 Server running at http://localhost:1234
 
+ preprocesor vytvořil
+    package.json
+    package-lock.json
+    složky
+     dist
+     node_modules
+     .cache
+
+****PRVNÍ COMMIT****
+
+vytvoření rozložení (styly).
+
+
+pracujeme
+
+1. s index.html:
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://kit.fontawesome.com/815f4dfefe.js" crossorigin="anonymous"></script>
+        <title>Select</title>
+    </head>
+    <body>
+    <div class="app">
+        <div class="wrap">
+            <div class="select open">
+                <div class="select__input">
+                    <span>
+                        příliš žluťoučký kůň úpěl ďábelské ódy
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="select__dropdown">
+                    <ul class="select__list">
+                        <li class="select__item">123</li>
+                        <li class="select__item">123</li>
+                        <li class="select__item">123</li>
+                        <li class="select__item">123</li>
+                        <li class="select__item">123</li>
+                        <li class="select__item">123</li>
+                        <li class="select__item">123</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+    </body>
+    </html>
+
+pracujeme s syles.csss:
+
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+   body{
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .app{
+      padding-top: 5rem;
+      display: flex;
+      justify-content: center;
+    }
+    .wrap{
+      width: 500px;
+    }
+
+    $height: 46px;
+
+    .select{
+      width: 100%;
+      position: relative;
+
+      &.open{
+        .select__dropdown{
+          display: block;
+        }
+        .select__input{
+          border-bottom: none;
+        }
+
+      &__input{
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        height: $height;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        cursor:pointer;
+      }
+
+      &__dropdown{
+        display: none;
+        position: absolute;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        top: $height;
+        left:0;
+        right:0;
+        max-height:200px;
+        overflow-y:auto;
+        box-shadow: 2px 3px 5px rgba(0,0,0,.3);
+      }
+
+      &__list{
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      &__item{
+        padding: 1rem;
+        border-bottom: 1px solid #ccc;
+
+        &:hover{
+          background-color: #eee;
+          cursor:pointer;
+          transition: 0.15s background-color ease-in;
+        }
+      }
+    }
+
+**** DRUHÝ COMMIT ***** (22:48)
