@@ -1,0 +1,51 @@
+https://www.youtube.com/watch?v=35va4OY7Y1c
+
+instalace parcel bundler
+https://en.parceljs.org/
+
+install -g parcel-bundler
+
+vytvoření souborů
+  index.js:
+      import {Select} from './select/select.js'
+      import './select/styles.scss'
+      const select = new Select()
+  ./select/select.js:
+         export class Select{
+         }
+      ./select/styles.csss:
+      .app{
+        padding-top: 5rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      .wrap{
+        width: 500px;
+      }
+  index.html (a v něm odkaz na <script src="index.js"></script>)
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport"
+                  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <title>Select</title>
+        </head>
+        <body>
+        <div class="app">
+            <div class="wrap">
+                123
+            </div>
+        </div>
+
+        <script src="index.js"></script>
+        </body>
+        </html>
+
+spuštění:
+   parcel index.html
+
+Server running at http://localhost:1234
+
