@@ -5,4 +5,5 @@ const select = new Select('#select',{
 
 })
 
+
 window.s = select

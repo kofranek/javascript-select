@@ -113,7 +113,7 @@ pracujeme
     </body>
     </html>
 
-pracujeme s syles.csss:
+pracujeme s styles.csss:
 
     @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
@@ -219,4 +219,12 @@ otevírání a zavírání
     window.s = select
 
 **** TŘETÍ COMMIT ***** (27:17)
+
+
+do select.js přeneseme část html
+    vytvoříme funkci gettemplate
+
+vytvoříme handlery pro rozevírání v select.js
+
+**** ČTVRTÝ COMMIT ***** 38:46
 
