@@ -187,3 +187,36 @@ pracujeme s syles.csss:
     }
 
 **** DRUHÝ COMMIT ***** (22:48)
+
+otevírání a zavírání
+ <div id="select" class="select open">
+ a
+ <div class="select__dropdown">
+ který je implicitně (viz styles.css) neviditelný
+   &__dropdown{
+     display: none;
+
+ a open ho zviditelní
+   &.open{
+     .select__dropdown{
+       display: block;
+     }
+     .select__input{
+       border-bottom: none;
+     }
+   }
+
+  třída select (importovaná index.js) totiž má dvě metody?
+      open(){
+          this.$el.classList.add('open')
+      }
+
+      close(){
+          this.$el.classList.remove('open')
+      }
+
+  v index.js ji v terminálu debugujeme přes proměnnou:
+    window.s = select
+
+**** TŘETÍ COMMIT ***** (27:17)
+
