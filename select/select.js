@@ -1,21 +1,23 @@
-const getTemplate =() =>{
+const getTemplate =(data =[], placeholder) =>{
+    const text = placeholder ?? 'implicitní placeholder'
+
+    const items = data.map(item =>{
+        return `
+        <li class="select__item">${item.value}</li>
+        `
+    })
+
     return `
             <div class="select__input" data-type="input">
                 <span>
-                    příliš žluťoučký kůň úpěl ďábelské ódy
+                   ${placeholder} 
                 </span>
                 <i class="fas fa-chevron-down" data-type="arrow"></i>
        
             </div>
             <div class="select__dropdown">
                 <ul class="select__list">
-                    <li class="select__item">123</li>
-                    <li class="select__item">123</li>
-                    <li class="select__item">123</li>
-                    <li class="select__item">123</li>
-                    <li class="select__item">123</li>
-                    <li class="select__item">123</li>
-                    <li class="select__item">123</li>
+                   ${items.join('')}
                 </ul>
             </div>
     `
@@ -26,14 +28,17 @@ const getTemplate =() =>{
 export class Select{
     constructor(selector, options){
         this.$el = document.querySelector(selector)
+        this.options = options
+
         this.#render()
         this.#setup()
 
     }
 
     #render(){        //privátní metoda
+        const{placeholder, data} = this.options
         this.$el.classList.add('select')
-        this.$el.innerHTML=getTemplate()
+        this.$el.innerHTML=getTemplate(data, placeholder)
     }
 
     #setup(){
@@ -49,13 +54,16 @@ export class Select{
     clickHandler(event){
         const {type } = event.target.dataset
 
-        if(type==='input'){
+        //console.log('type=',type)
+        if(type==='input'||type==='arrow'){
+
+            console.log('volám toggle')
             this.toggle()
         }
 
-        console.log("event.target.dataset:",event.target.dataset)
-        console.log(type)
-        console.log('this.$arrow=',this.$arrow)
+        // console.log("event.target.dataset:",event.target.dataset)
+        // console.log(type)
+        // console.log('this.$arrow=',this.$arrow)
     }
 
     get isOpen(){

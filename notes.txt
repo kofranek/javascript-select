@@ -226,5 +226,131 @@ do select.js přeneseme část html
 
 vytvoříme handlery pro rozevírání v select.js
 
-**** ČTVRTÝ COMMIT ***** 38:46
+**** ČTVRTÝ COMMIT ***** 38:55
 
+oprava click handleru aby reagoval i na šipku:
+
+        console.log('type=',type)
+        if(type==='input'||type==='arrow'){
+
+            console.log('volám toggle')
+            this.toggle()
+        }
+
+v index.js zavedeme první položku v options
+
+import {Select} from './select/select.js'
+import './select/styles.scss'
+const select = new Select('#select',{
+
+    placeholder: 'Vyber položku'
+
+})
+
+
+a v definici třídy Select zavedeme v konstruktoru options
+a v renderu přečteme hodnotu placeholderu a pošleme ji jako
+parsmetr do getTemplate
+
+výraz const{placeholder} = this.options
+přiřadí položce placeholder jeji hodnotu
+
+
+export class Select{
+    constructor(selector, options){
+        this.$el = document.querySelector(selector)
+        this.options = options
+
+        this.#render()
+        this.#setup()
+
+    }
+
+    #render(){        //privátní metoda
+        const{placeholder} = this.options
+        this.$el.classList.add('select')
+        this.$el.innerHTML=getTemplate(placeholder)
+    }
+
+v getTemplate to vykreslíme (a zavedeme jeho omplicitní hodotu,
+kdyby mu nebyla přiřazena žádná hodnota === undefinded pomocí
+operátoru ??):
+
+const getTemplate =(placeholder) =>{
+    const text = placeholder ?? 'implicitní placeholder'
+    return `
+            <div class="select__input" data-type="input">
+                <span>
+                   ${placeholder}
+                </span>
+                <i class="fas fa-chevron-down" data-type="arrow"></i>
+
+
+nyní v index.js zavedeme druhou položku options - data:
+
+const select = new Select('#select',{
+
+    placeholder: 'Vyber položku',
+    data: [
+        {id: '1', value: 'React'},
+        {id: '2', value: 'Angular'},
+        {id: '3', value: 'Vue'},
+        {id: '4', value: 'React Native'},
+        {id: '5', value: 'Next'},
+        {id: '6', value: 'Nest'}
+    ]
+
+})
+
+v definici třídy select budeme z options načítat kromě hodnoty
+placeholdera i hodnotu položky data a dávat ji jako první argument
+do funkce getTemplate:
+
+    #render(){        //privátní metoda
+        const{placeholder, data} = this.options
+        this.$el.classList.add('select')
+        this.$el.innerHTML=getTemplate(data, placeholder)
+    }
+
+funkce getTemplate  načte data jako pole, pomocí funkce map()
+ho namapuje na pole jednotlivých položek - ale ty stringy jsou
+odděleny čárkami, takže pole stringů přeměníme na string pomocí
+ ${items.join('')} a tuto hodnotu pak dáme do templátu:
+
+const getTemplate =(data =[], placeholder) =>{
+    const text = placeholder ?? 'implicitní placeholder'
+
+    const items = data.map(item =>{
+        return `
+        <li class="select__item">${item.value}</li>
+        `
+    })
+
+    return `
+            <div class="select__input" data-type="input">
+                <span>
+                   ${placeholder}
+                </span>
+                <i class="fas fa-chevron-down" data-type="arrow"></i>
+
+            </div>
+            <div class="select__dropdown">
+                <ul class="select__list">
+                   ${items.join('')}
+                </ul>
+            </div>
+    `
+}
+
+
+a getTemplate vrací hodnotu v privátní (proto#) metodě render:
+
+    #render(){        //privátní metoda
+        const{placeholder, data} = this.options
+        this.$el.classList.add('select')
+        this.$el.innerHTML=getTemplate(data, placeholder)
+    }
+
+
+***** PÁTÝ COMMIT *******
+45:00
