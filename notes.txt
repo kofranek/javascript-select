@@ -329,7 +329,7 @@ const getTemplate =(data =[], placeholder) =>{
     return `
             <div class="select__input" data-type="input">
                 <span>
-                   ${placeholder}
+                   ${text}
                 </span>
                 <i class="fas fa-chevron-down" data-type="arrow"></i>
 
@@ -354,3 +354,186 @@ a getTemplate vrací hodnotu v privátní (proto#) metodě render:
 
 ***** PÁTÝ COMMIT *******
 45:00
+
+nyní by bylo dobrí klikat a na položku a změnit výběr v samotném selektu
+
+    v kostruktoru třídy Select přidáme prvek this.selectedId=null
+
+          export class Select{
+              constructor(selector, options){
+                  this.$el = document.querySelector(selector)
+                  this.options = options
+                  this.selectedId=null
+
+                  this.#render()
+                  this.#setup()
+
+              }
+
+každý prvek bude mít data-type = "item"
+                a    data-id=${item.id}
+
+    const items = data.map(item =>{
+        return `
+        <li class="select__item"  data-type="item" data-id=${item.id}>${item.value}</li>
+        `
+    })
+
+    a tedˇ bude mít každý prvek unikátní data-id
+
+    v clichHandleru zjistíme id prvku na který jsme klikli a zavoláme veřejnou funkci select
+
+        clickHandler(event){
+            const {type } = event.target.dataset
+
+            //console.log('type=',type)
+            if(type==='input'||type==='arrow'){
+
+                console.log('volám toggle')
+                this.toggle()
+            } else if (type === 'item'){
+                const id = event.target.dataset.id
+                this.select(id)
+               //console.log('id=',id)
+            }
+
+
+
+          select(id){
+              this.selectedId = id
+              this.$value.textContent=this.current.value
+              this.close()
+          }
+
+      veřejná funkce 'select' uloží 'id' do pole 'selectedId', z getteru current,
+      vyhledá odkaz na příslušnou odpovídající položku value provku s i
+      dentifikátorem id a to uloži to textové proměnné ve <spanu s id "value">
+      a zavolánmím funkce close() zavře nabídkový seznam
+
+
+      ( <span data-type="value">
+                 ${text}
+          </span>)
+
+
+      napíšeme getetr, který bude zjišťovat value vybraného prvku:
+
+          get current(){
+              return this.options.data.find(item =>item.id === this.selectedId)
+              //v currentu bude neustále náš vybraný prvek
+          }
+
+
+   Nyní bychom měli označit zvýrazněním který element jsme vybrali, ve stylu
+   &__item přidáme styl &selected
+
+     &__item{
+       padding: 1rem;
+       border-bottom: 1px solid #ccc;
+
+       &.selected{
+         background-color: bisque;
+       }
+
+       &:hover{
+         background-color: #eee;
+         cursor:pointer;
+         transition: 0.15s background-color ease-in;
+       }
+     }
+
+
+     podbarvení uděláme v ve vukce select:
+
+
+         select(id){
+             this.selectedId = id
+             this.$value.textContent=this.current.value
+
+             //očistit předtím podbarvené položky
+             this.$el.querySelectorAll('[data-type ="item"]').forEach(el =>{
+                 el.classList.remove('selected')
+             })
+             //podbarvíme vybranou položku
+             this.$el.querySelector(`[data-id="${id}"]`).classList.add('selected')
+
+             this.close()
+         }
+
+   Někdy chceme, aby byl nějaký prvek už vybrán předem.
+   Proto v options přidáme další prvek s názvem 'selectedItem' (v souboru index.js)
+
+
+        import {Select} from './select/select.js'
+        import './select/styles.scss'
+        const select = new Select('#select',{
+
+            placeholder: 'Vyber položku',
+            selectedId: '4',
+            data: [
+                {id: '1', value: 'React'},
+                {id: '2', value: 'Angular'},
+                {id: '3', value: 'Vue'},
+                {id: '4', value: 'React Native'},
+                {id: '5', value: 'Next'},
+                {id: '6', value: 'Nest'}
+            ]
+
+        })
+
+    v konstruktoru třídy Select: this.selectedId = options.seleced
+
+        export class Select{
+            constructor(selector, options){
+                this.$el = document.querySelector(selector)
+                this.options = options
+                //this.selectedId=null
+                this.selectedId = options.selectedId
+
+                this.#render()
+                this.#setup()
+            }
+
+
+
+   V getTemplate přidáme parametr selecdedId a a do popisu  prvků třídu cls, která je
+   implicitně prázdný řetšzec, když v nějaké položce (item.id===selectedId),
+   pak přiřadíme text do očátečního rámečku: text=item.value a označíme třídu cls jaklo
+   'selected' kvůli podbarvení v rozevírací nabídce.
+
+
+        const getTemplate =(data =[], placeholder, selectedId) =>{
+            //const text = placeholder ?? 'implicitní placeholder'
+            let text = placeholder ?? 'implicitní placeholder'
+
+            const items = data.map(item =>{
+                let cls=''
+                if (item.id===selectedId){
+                    text=item.value
+                    cls='selected'
+                }
+                return `
+                <li class="select__item" ${cls} data-type="item" data-id=${item.id}>${item.value}</li>
+                `
+            })
+            ...
+
+můžeme hodnoy vybrané položky měnit programově:
+v index.js jsme např. zavedli proměnnou:
+
+window.s = select
+
+a v konzoli prohlížeče např nastavit s.select('2')
+
+
+rozšíříme veřejnou metodu destroy na odstranění nejen posluchače událostí ale celého selektu:
+
+    destroy(){
+        this.$el.removeEventListener('click',this.clickHandler)
+        this.$el.innerHTML = ''
+    }
+
+a když v konzoli prohlížeče napíšeme s.destroy() . zmizí celý prvek
+
+***** ŠESTÝ COMMIT *******
+56:30
