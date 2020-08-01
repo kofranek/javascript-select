@@ -14,6 +14,7 @@ const getTemplate =(data =[], placeholder, selectedId) =>{
     })
 
     return `
+            <div class="select__backdrop" data-type="backdrop"></div>
             <div class="select__input" data-type="input">
                 <span data-type="value">
                    ${text} 
@@ -58,7 +59,7 @@ export class Select{
         this.$arrow = this.$el.querySelector('[data-type="arrow"]')
         this.$value = this.$el.querySelector('[data-type="value"]')
 
-        console.log('this.$value=',this.$value)
+       // console.log('this.$value=',this.$value)
     }
 
     clickHandler(event){
@@ -66,13 +67,15 @@ export class Select{
 
         //console.log('type=',type)
         if(type==='input'||type==='arrow'){
-
-            console.log('volám toggle')
+            //console.log('volám toggle')
             this.toggle()
         } else if (type === 'item'){
             const id = event.target.dataset.id
             this.select(id)
             //console.log('id=',id)
+        } else if (type === 'backdrop'){
+            //console.log('close')
+            this.close()
         }
 
         //console.log("event.target.dataset:",event.target.dataset)
@@ -94,6 +97,8 @@ export class Select{
         })
         //obarvíme vybranou položku
         this.$el.querySelector(`[data-id="${id}"]`).classList.add('selected')
+
+        this.options.onSelect ? this.options.onSelect(this.current):null
 
         this.close()
     }

@@ -537,3 +537,134 @@ a když v konzoli prohlížeče napíšeme s.destroy() . zmizí celý prvek
 
 ***** ŠESTÝ COMMIT *******
 56:30
+
+Poslední funkcionál:
+
+Uzavřít select když klikneme mimo
+
+uděláme to tak, že v getTemplate (v souboru select.js) přidáme třídu "backdrop""
+
+
+const getTemplate =(data =[], placeholder, selectedId) =>{
+    //const text = placeholder ?? 'implicitní placeholder'
+    let text = placeholder ?? 'implicitní placeholder'
+  ....
+  ....
+    return `
+            <div class="select__backdrop" data-type="backdrop"></div>
+            <div class="select__input" data-type="input">
+                <span data-type="value">
+                   ${text}
+                </span>
+                <i class="fas fa-chevron-down" data-type="arrow"></i>
+
+            </div>
+            <div class="select__dropdown">
+                <ul class="select__list">
+                   ${items.join('')}
+                </ul>
+            </div>
+    `
+}
+
+v Styles.scss vytvoříme transparentní okno:
+
+.select{
+  width: 100%;
+  position: relative;
+  z-index:100;
+   ...
+   ....
+  &__backdrop {
+    position: fixed;
+    display: none;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    //background: rgba(0,0,0,0.5);
+    background: transparent;
+    ....
+  }
+...
+}
+
+Když se otevře nabídka otevře se i _backdrop, a hlídáme na něj klikání (mimo nabídku),
+které zavře roletovou naabídku:
+
+
+    clickHandler(event){
+        const {type } = event.target.dataset
+
+        //console.log('type=',type)
+        if(type==='input'||type==='arrow'){
+            //console.log('volám toggle')
+            this.toggle()
+        } else if (type === 'item'){
+            const id = event.target.dataset.id
+            this.select(id)
+            //console.log('id=',id)
+        } else if (type === 'backdrop'){
+            //console.log('close')
+            this.close()
+        }
+
+A nyní volání callback
+
+v souboru index.js přidám další položku options:
+ onSelect(item){
+   ....
+ }, např:
+
+
+    import {Select} from './select/select.js'
+    import './select/styles.scss'
+    const select = new Select('#select',{
+        placeholder: 'Vyber položku',
+        selectedId: '4',
+        data: [
+            {id: '1', value: 'React'},
+            {id: '2', value: 'Angular'},
+            {id: '3', value: 'Vue'},
+            {id: '4', value: 'React Native'},
+            {id: '5', value: 'Next'},
+            {id: '6', value: 'Nest'}
+        ],
+        onSelect(item){
+            console.log('Selected Item:',item)
+        }
+
+a ve veřejné metodě select.js
+
+    select(id){
+        this.selectedId = id
+        this.$value.textContent=this.current.value
+        //očistit předtím podbarvené položky
+        this.$el.querySelectorAll('[data-type ="item"]').forEach(el =>{
+            el.classList.remove('selected')
+        })
+        //obarvíme vybranou položku
+        this.$el.querySelector(`[data-id="${id}"]`).classList.add('selected')
+
+        this.options.onSelect ? this.options.onSelect(this.current):null
+
+        this.close()
+    }
+
+
+    když this.options.onSelect něco je - pak volám funkci onSelece, jinak nic
+
+
+a můžeme to vše ovládat i programově např z konzole prohlížeče:
+
+díky
+window.s = select
+
+např.
+s.select('3')
+
+
+***** SEDMÝ COMMIT *******
+
+

@@ -19,6 +19,7 @@ $height: 46px;
 .select{
   width: 100%;
   position: relative;
+  z-index:100;
 
   &.open{
     .select__dropdown{
@@ -26,6 +27,10 @@ $height: 46px;
     }
     .select__input{
       border-bottom: none;
+    }
+
+    .select__backdrop{
+      display: block;
     }
   }
 
@@ -59,6 +64,17 @@ $height: 46px;
     list-style: none;
   }
 
+  &__backdrop {
+    position: fixed;
+    display: none;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    //background: rgba(0,0,0,0.5);
+    background: transparent;
+  }
 
   &__item{
     padding: 1rem;
